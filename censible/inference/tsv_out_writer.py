@@ -11,7 +11,7 @@ import argparse
 from typing import List
 import numpy as np
 import torch
-from censible.inference.term_descriptions import full_term_description
+from ..inference.term_descriptions import full_term_description
 
 
 class TSVWriter:

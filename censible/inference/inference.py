@@ -11,11 +11,11 @@ during processing.
 
 import argparse
 import re
-from censible.data.get_data_paths import data_file_path
+from ..data.get_data_paths import data_file_path
 import molgrid
 import subprocess
 import torch
-from censible.CEN_model import CENet
+from ..models.CEN_model import CENet
 import random
 import os
 import numpy as np

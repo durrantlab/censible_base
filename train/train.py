@@ -5,7 +5,7 @@ sys.path.append("..")
 
 from censible.training import get_args, train_single_fold, validate_params
 from censible.outputs import save_outputs
-from censible.CEN_model import CENet
+from censible.models.CEN_model import CENet
 from censible.preprocess import preprocess
 
 params = get_args()

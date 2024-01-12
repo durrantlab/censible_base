@@ -5,7 +5,7 @@ problematic terms from the dataset, ensuring that the dataset is ready for model
 training.
 """
 
-from censible.data.get_data_paths import data_file_path
+from .data.get_data_paths import data_file_path
 import molgrid
 import torch
 import numpy as np

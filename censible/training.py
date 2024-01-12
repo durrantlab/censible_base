@@ -9,7 +9,7 @@ respect to terms, weights, and contributions.
 
 import argparse
 from typing import Any, Tuple
-from censible.debug import grid_channel_to_xyz_file
+from .debug import grid_channel_to_xyz_file
 import molgrid
 import torch
 import torch.optim as optim
@@ -112,25 +112,8 @@ def train_single_fold(
     # https://gnina.github.io/libmolgrid/python/index.html#the-gridmaker-class
     gmaker = molgrid.GridMaker()  # use defaults
 
-    # Create a training dataset, which has access to all receptor and ligand grids.
-    # train_dataset = molgrid.ExampleProvider(
-    #     ligmolcache="lig.molcache2",
-    #     recmolcache="rec.molcache2",
-    #     iteration_scheme=molgrid.IterationScheme.LargeEpoch,
-    #     shuffle=True,
-    #     # default_batch_size=1
-    #     default_batch_size=params["batch_size"],
-    #     stratify_min=3,  # TODO: What do these mean?
-    #     stratify_max=10,
-    #     stratify_step=1,
-    #     stratify_pos=0,
-    # )
-
     # Indicate that the training set will only use those grids in a given file,
     # not all grids.
-    # train_dataset.populate(params["prefix"] + ("train%d_cen.types" % params["fold_num"]))
-    ## train_dataset.populate("all_cen.types")
-
     train_dataset, _ = load_split(
         params["prefix"] + ("train%d_cen.types" % params["fold_num"]),
         params["batch_size"],
@@ -139,13 +122,6 @@ def train_single_fold(
     )
 
     # Similarly create a testing dataset.
-    # test_dataset = molgrid.ExampleProvider(
-    #     ligmolcache="lig.molcache2",
-    #     recmolcache="rec.molcache2",
-    #     iteration_scheme=molgrid.IterationScheme.LargeEpoch,
-    #     default_batch_size=1,
-    # )
-    # test_dataset.populate(params["prefix"] + ("test%d_cen.types" % params["fold_num"]))
     test_dataset, test_gninatypes_filenames = load_split(
         params["prefix"] + ("test%d_cen.types" % params["fold_num"]),
         1,
@@ -242,19 +218,6 @@ def train_single_fold(
                 random_rotation=True,
             )
 
-            # # TODO: Debug below
-            # gmaker.set_resolution(0.1)
-            # for channel in range(len(input_tensor_for_training[0])):
-            #     xyz = grid_channel_to_xyz_file(input_tensor_for_training[0][channel])
-            #     with open("tmp" + str(channel) + ".xyz", "w") as f:
-            #         f.write(xyz)
-                
-            # grid_channel_to_xyz_file(input_tensor[0][0])
-            # print(batch_idx)
-            # print("")
-            # grid_channel_to_xyz_file(input_tensor[21][0])
-            # break
-
             # Get the output for this batch. output[0] is output tensor.
             # output[1] is None for some reason. Note that weighted_terms is the
             # pre-calculated terms times the coefficients.
@@ -266,8 +229,6 @@ def train_single_fold(
                 output.flatten(), affinity_label_for_training.flatten()
             )
             training_loss.backward()
-
-            # print(loss)
 
             # clip gradients
             nn.utils.clip_grad_norm_(model.parameters(), 1)
